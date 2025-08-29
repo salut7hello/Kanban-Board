@@ -7,7 +7,7 @@ interface BoardHeaderProps {
   onClearSearch: () => void;
   onAddColumn: () => void;
   onOpenMenu: () => void;
-  menuOpen: boolean  // viser tilstand på knappen (aria-expanded)
+  
 }
 
 export default function BoardHeader({
