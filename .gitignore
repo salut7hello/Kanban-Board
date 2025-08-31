@@ -152,3 +152,8 @@ obj/
 .vite/
 client/.vite/
 
+
+# Vite cache
+.vite/
+client/.vite/
+
