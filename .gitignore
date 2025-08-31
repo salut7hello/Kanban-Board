@@ -144,3 +144,8 @@ obj/
 *.user
 *.suo
 *.sln.docstates
+
+# Vite cache
+.vite/
+client/.vite/
+
