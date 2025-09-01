@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import BoardMenu from "./boardMenu"
+import BoardMenu from "./BoardMenu"
 type BoardMenuActions = {
   onRename: () => void;
   onChangeBackground: () => void;
