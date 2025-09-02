@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import BoardHeader from "./components/BoardHeader";
+import BoardHeader from "./components/boardHeader";
 import BoardColumns from "./components/BoardColumns";
 import BackgroundPicker from "./components/BackgroundPicker";
 import type { Column as ColumnModel, Card as CardModel } from "./models/db";
@@ -7,16 +7,13 @@ import type { Column as ColumnModel, Card as CardModel } from "./models/db";
 const BG_OPTIONS = ["/backgrounds/basic.webp", "/backgrounds/vann.webp"];
 
 export default function App() {
-  // Header state
   const [boardTitle, setBoardTitle] = useState("Mitt board");
   const [q, setQ] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Background picker
   const [pickerOpen, setPickerOpen] = useState(false);
   const [bgUrl, setBgUrl] = useState<string | null>(null);
 
-  // Demo board data (erstatt med Dexie senere)
   const BOARD_ID = 1;
   const [columns, setColumns] = useState<ColumnModel[]>([
     { id: 1, boardId: BOARD_ID, title: "To do", order: 0 },
@@ -27,13 +24,12 @@ export default function App() {
   const nextId = useRef(100);
   const genId = () => ++nextId.current;
 
-  // Header handlers
   const handleRename = () => {
     const next = prompt("New board title:", boardTitle)?.trim();
     if (next && next !== boardTitle) setBoardTitle(next);
   };
 
-  // Column handlers
+  // Columns
   const onAddColumn = (title: string) => {
     const order = columns.length ? Math.max(...columns.map(c => c.order)) + 1 : 0;
     setColumns(cols => [...cols, { id: genId(), boardId: BOARD_ID, title, order }]);
@@ -46,7 +42,7 @@ export default function App() {
     setCards(cs => cs.filter(c => c.columnId !== columnId));
   };
 
-  // Card handlers
+  // Cards
   const onAddCard = (columnId: number, title: string) => {
     const inCol = cards.filter(c => c.columnId === columnId);
     const order = inCol.length ? Math.max(...inCol.map(c => c.order)) + 1 : 0;
@@ -64,19 +60,56 @@ export default function App() {
     setCards(cs => cs.filter(c => c.id !== cardId));
   };
 
-  // Søkefilter
-  const visibleCards = q
-    ? cards.filter(c => c.title.toLowerCase().includes(q.toLowerCase()))
-    : cards;
+  // DnD: reorder/move
+  const onReorderCards = (
+    cardId: number,
+    fromColumnId: number,
+    toColumnId: number,
+    toIndex: number
+  ) => {
+    setCards(prev => {
+      const next = [...prev];
+      const moving = next.find(c => c.id === cardId);
+      if (!moving) return prev;
+
+      const from = next
+        .filter(c => c.columnId === fromColumnId && c.id !== cardId)
+        .sort((a, b) => a.order - b.order);
+
+      const to = next
+        .filter(c => c.columnId === toColumnId && c.id !== cardId)
+        .sort((a, b) => a.order - b.order);
+
+      const insertAt = toIndex < 0 || toIndex > to.length ? to.length : toIndex;
+      to.splice(insertAt, 0, { ...moving, columnId: toColumnId });
+
+      from.forEach((c, i) => (c.order = i));
+      to.forEach((c, i) => (c.order = i));
+
+      for (const c of next) {
+        if (c.id === cardId) {
+          c.columnId = toColumnId;
+          const idx = to.findIndex(k => k.id === c.id);
+          if (idx >= 0) c.order = idx;
+        } else if (c.columnId === fromColumnId) {
+          const idx = from.findIndex(k => k.id === c.id);
+          if (idx >= 0) c.order = idx;
+        } else if (c.columnId === toColumnId) {
+          const idx = to.findIndex(k => k.id === c.id);
+          if (idx >= 0) c.order = idx;
+        }
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="relative min-h-screen text-white">
-      {/* FULLSKJERMS BAKGRUNN */}
+      {/* Fullscreen bakgrunn */}
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={bgUrl ? { backgroundImage: `url(${bgUrl})` } : { backgroundColor: "#0b0b0e" }}
       />
-   
 
       <BoardHeader
         title={boardTitle}
@@ -90,25 +123,25 @@ export default function App() {
         onChangeBackground={() => setPickerOpen(true)}
       />
 
-      {/* Kolonner */}
       <main className="pt-14 px-4 pb-10 overflow-x-auto relative z-10">
         <BoardColumns
-          columns={columns}
-          cards={visibleCards}
-          onAddColumn={onAddColumn}
-          onRenameColumn={onRenameColumn}
-          onDeleteColumn={onDeleteColumn}
-          onAddCard={onAddCard}
-          onToggleCard={onToggleCard}
-          onEditCard={onEditCard}
-          onDeleteCard={onDeleteCard}
-        />
+  columns={columns}
+  cards={cards}
+  onAddColumn={onAddColumn}
+  onRenameColumn={onRenameColumn}
+  onDeleteColumn={onDeleteColumn}
+  onAddCard={onAddCard}
+  onToggleCard={onToggleCard}
+  onEditCard={onEditCard}
+  onDeleteCard={onDeleteCard}
+  onReorderCards={onReorderCards}
+/>
       </main>
 
       <BackgroundPicker
         open={pickerOpen}
         options={BG_OPTIONS}
-        onSelect={(url) => setBgUrl(url)}
+        onSelect={url => setBgUrl(url)}
         onClose={() => setPickerOpen(false)}
       />
     </div>
