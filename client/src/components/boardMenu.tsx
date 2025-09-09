@@ -31,10 +31,10 @@ export default function BoardMenu({ open, onClose, onRename, onChangeBackground 
       className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-zinc-700/60 bg-zinc-900 text-white shadow-xl"
     >
       <button ref={firstBtnRef} role="menuitem" className="w-full text-left px-3 py-2 hover:bg-white/10 rounded-lg" onClick={() => { onRename(); onClose(); }}>
-        Rename board…
+        Rename board
       </button>
       <button role="menuitem" className="w-full text-left px-3 py-2 hover:bg-white/10 rounded-lg" onClick={() => { onChangeBackground(); onClose(); }}>
-        Change background…
+        Change background
       </button>
     </div>
   );

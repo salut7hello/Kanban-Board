@@ -1,18 +1,16 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import BoardMenu from "./BoardMenu"
-type BoardMenuActions = {
-  onRename: () => void;
-  onChangeBackground: () => void;
-};
+import type { BoardMenuProps } from "./BoardMenu";
 
+type BoardMenuActions = Pick<BoardMenuProps, "onRename" | "onChangeBackground">;
 interface BoardHeaderProps extends BoardMenuActions {
   title: string;
   searchQuery: string;
   onChangeSearch: (q: string) => void;
   onClearSearch: () => void;
-  onOpenMenu: () => void;     // toggle/open
-  onCloseMenu: () => void;    // close
-  menuOpen: boolean;          // controlled state
+  onOpenMenu: () => void;    
+  onCloseMenu: () => void;   
+  menuOpen: boolean;          
 }
 
 export default function BoardHeader({
@@ -20,7 +18,6 @@ export default function BoardHeader({
   searchQuery,
   onChangeSearch,
   onClearSearch,
-
   onOpenMenu,
   onCloseMenu,
   menuOpen,

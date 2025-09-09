@@ -56,7 +56,7 @@ export default function AddColumnCard({ onAdd, className = "" }: AddColumnCardPr
           type="button"
           onClick={submit}
           disabled={!title.trim()}
-          className="rounded-lg bg-white text-black px-3 py-1 text-sm disabled:opacity-40"
+          className="rounded-lg bg-white text-white px-3 py-1 text-sm disabled:opacity-40"
         >
           Legg til
         </button>

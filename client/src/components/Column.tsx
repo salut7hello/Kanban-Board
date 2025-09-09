@@ -1,8 +1,10 @@
 
 import { useState } from "react";
-import CardItem from "./CardItem";
 import AddCardRow from "./AddCardRow";
+import DraggableCard from "./DraggableCard"; 
 import type { Card as CardModel } from "../models/db";
+import { useDroppable } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 type ColumnModel = {
   id: number;
@@ -13,8 +15,12 @@ type ColumnModel = {
 interface ColumnProps {
   column: ColumnModel;
   cards: CardModel[];
+
+  // kolonne-handlinger
   onRenameColumn: (columnId: number, nextTitle: string) => void;
   onDeleteColumn: (columnId: number) => void;
+
+  // kort-handlinger
   onAddCard: (columnId: number, title: string) => void;
   onToggleCard?: (cardId: number) => void;
   onEditCard?: (cardId: number) => void;
@@ -34,7 +40,14 @@ export default function Column({
   const [adding, setAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Hele kolonnen er droppable (slipp nederst i lista)
+  const { setNodeRef, isOver } = useDroppable({
+    id: `col-${column.id}`,
+    data: { type: "column", columnId: column.id },
+  });
+
   const sortedCards = [...cards].sort((a, b) => a.order - b.order);
+  const itemIds = sortedCards.map((c) => c.id!);
 
   const doRename = () => {
     const next = prompt("Rename list:", column.title)?.trim();
@@ -52,9 +65,11 @@ export default function Column({
   return (
     <section
       aria-label={column.title}
+      ref={setNodeRef}
       className="w-72 shrink-0 rounded-2xl bg-black/70 text-white shadow-lg ring-1 ring-white/10"
+      style={{ outline: isOver ? "2px dashed rgba(255,255,255,.25)" : "none" }}
     >
-      {/* Header */}
+      {/* Kolonne-header */}
       <div className="flex items-center justify-between px-3 py-2">
         <h3 className="font-semibold truncate">{column.title}</h3>
 
@@ -65,14 +80,14 @@ export default function Column({
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             className="px-2 py-1 rounded hover:bg-white/10"
-            onClick={() => setMenuOpen(v => !v)}
+            onClick={() => setMenuOpen((v) => !v)}
           >
             ⋯
           </button>
 
           {menuOpen && (
             <>
-              {/* Klikk utenfor for å lukke */}
+              {/* klikk utenfor for å lukke */}
               <button
                 aria-hidden
                 className="fixed inset-0 z-40 cursor-default"
@@ -102,24 +117,28 @@ export default function Column({
         </div>
       </div>
 
-      {/* Kort */}
+      {/* Kort-liste (sortable) */}
       <div className="px-3 pb-3">
-        {sortedCards.length === 0 ? (
-          <div className="text-sm text-white/60 py-2">Ingen kort ennå</div>
-        ) : (
-          <ul className="space-y-2">
-            {sortedCards.map(c => (
-              <li key={c.id}>
-                <CardItem
-                  card={c}
-                  onToggle={() => onToggleCard?.(c.id!)}
-                  onEdit={() => onEditCard?.(c.id!)}
-                  onDelete={() => onDeleteCard?.(c.id!)}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
+        <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+          {sortedCards.length === 0 ? (
+            <div className="text-sm text-white/60 py-2">Ingen kort ennå</div>
+          ) : (
+            <ul className="space-y-2">
+              {sortedCards.map((c, i) => (
+                <li key={c.id}>
+                  <DraggableCard
+                    card={c}
+                    columnId={column.id}
+                    index={i}
+                    onToggle={() => onToggleCard?.(c.id!)}
+                    onEdit={() => onEditCard?.(c.id!)}
+                    onDelete={() => onDeleteCard?.(c.id!)}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </SortableContext>
 
         {/* Legg til kort */}
         {!adding ? (
