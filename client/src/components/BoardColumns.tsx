@@ -46,12 +46,11 @@ export default function BoardColumns({
 }: BoardColumnsProps) {
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
 
-  // PointerSensor funker for både mus og touch
+  
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // velg én av disse constraint-typene:
       activationConstraint: { distance: 8 }, // start drag etter 8px bevegelse
-      // activationConstraint: { delay: 150, tolerance: 5 }, // eller hold i 150ms
+      
     })
   );
 
@@ -59,7 +58,7 @@ export default function BoardColumns({
     const { active, over } = e;
     if (!over) return;
 
-    const activeId = active.id as number; // card-id vi satte i useSortable
+    const activeId = active.id as number; // cardId vi satte i useSortable
     const fromColId = active.data.current?.columnId as number | undefined;
 
     // over kan være et annet kort ELLER selve kolonneflaten
@@ -117,4 +116,5 @@ export default function BoardColumns({
       </section>
     </DndContext>
   );
+  
 }

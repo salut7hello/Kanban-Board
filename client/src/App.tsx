@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import BoardHeader from "./components/boardHeader";
+import BoardHeader from "./components/BoardHeader";
 import BoardColumns from "./components/BoardColumns";
 import BackgroundPicker from "./components/BackgroundPicker";
 import type { Column as ColumnModel, Card as CardModel } from "./models/db";

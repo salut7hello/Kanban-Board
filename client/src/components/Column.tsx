@@ -1,9 +1,8 @@
 
 import { useState } from "react";
 import AddCardRow from "./AddCardRow";
-import DraggableCard from "./DraggableCard"; // wrapper rundt CardItem med useSortable
-import type { Card as CardModel } from "../models/db"; // justér sti om nødvendig
-
+import DraggableCard from "./DraggableCard"; 
+import type { Card as CardModel } from "../models/db";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
@@ -48,7 +47,7 @@ export default function Column({
   });
 
   const sortedCards = [...cards].sort((a, b) => a.order - b.order);
-  const itemIds = sortedCards.map((c) => c.id!); // dnd-kit trenger stabile ids
+  const itemIds = sortedCards.map((c) => c.id!);
 
   const doRename = () => {
     const next = prompt("Rename list:", column.title)?.trim();

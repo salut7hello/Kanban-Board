@@ -11,7 +11,7 @@ interface AddCardRowProps {
 export default function AddCardRow({
   onSubmit,
   onCancel,
-  placeholder = "Korttittel…",
+  placeholder = "tittel",
   autoFocus = true,
   className = "",
 }: AddCardRowProps) {
@@ -36,7 +36,7 @@ export default function AddCardRow({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder={placeholder}
-        aria-label="Ny korttittel"
+        aria-label="Ny tittel"
         className="w-full rounded bg-black/30 px-3 py-2 outline-none ring-1 ring-white/20 focus:ring-white/40"
         onKeyDown={(e) => {
           if (e.key === "Enter") submit();
@@ -48,7 +48,7 @@ export default function AddCardRow({
           type="button"
           onClick={submit}
           disabled={!title.trim()}
-          className="rounded-lg bg-white text-black px-3 py-1 text-sm disabled:opacity-40"
+          className="rounded-lg bg-black/30 text-white px-3 py-1 text-sm disabled:opacity-40"
         >
           Legg til
         </button>

@@ -1,7 +1,7 @@
 
 type Props = {
   open: boolean;
-  options: string[];              // ['/backgrounds/stars.webp', ...]
+  options: string[];              // [/backgrounds/pictures]
   onSelect: (url: string) => void;
   onClose: () => void;
 };

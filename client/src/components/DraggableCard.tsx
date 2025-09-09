@@ -17,7 +17,7 @@ export default function DraggableCard({ card, columnId, index, ...actions }: Pro
   const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
     useSortable({
       id: card.id!,                // unikt id
-      data: { type: "card", columnId, index }, // viktig metadata
+      data: { type: "card", columnId, index }, 
     });
 
   const style: React.CSSProperties = {
