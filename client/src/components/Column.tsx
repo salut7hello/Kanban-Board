@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import AddCardRow from "./AddCardRow";
-import DraggableCard from "./DraggableCard"; 
+import DraggableCard from "./DraggableCard";
 import type { Card as CardModel } from "../models/db";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -15,6 +14,10 @@ type ColumnModel = {
 interface ColumnProps {
   column: ColumnModel;
   cards: CardModel[];
+
+  // fra SortableColumn
+  dragHandleRef?: (el: HTMLElement | null) => void;
+  dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 
   // kolonne-handlinger
   onRenameColumn: (columnId: number, nextTitle: string) => void;
@@ -30,6 +33,8 @@ interface ColumnProps {
 export default function Column({
   column,
   cards,
+  dragHandleRef,
+  dragHandleProps,
   onRenameColumn,
   onDeleteColumn,
   onAddCard,
@@ -40,7 +45,7 @@ export default function Column({
   const [adding, setAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Hele kolonnen er droppable (slipp nederst i lista)
+  // Hele kolonnen er droppable (slipp kort nederst i lista)
   const { setNodeRef, isOver } = useDroppable({
     id: `col-${column.id}`,
     data: { type: "column", columnId: column.id },
@@ -63,28 +68,35 @@ export default function Column({
   };
 
   return (
-    <section
-      aria-label={column.title}
-      ref={setNodeRef}
-      className="w-72 shrink-0 rounded-2xl bg-black/70 text-white shadow-lg ring-1 ring-white/10"
-      style={{ outline: isOver ? "2px dashed rgba(255,255,255,.25)" : "none" }}
+  <section
+    aria-label={column.title}
+    ref={setNodeRef}
+    className="w-72 shrink-0 rounded-2xl bg-black/70 text-white shadow-lg ring-1 ring-white/10"
+    style={{ outline: isOver ? "2px dashed rgba(255,255,255,.25)" : "none" }}
+  >
+    {/* Kolonne-header (hele headeren er drag-handle) */}
+    <div
+      className="flex items-center justify-between px-3 py-2 cursor-grab active:cursor-grabbing"
+      ref={dragHandleRef as never}
+      {...dragHandleProps}
     >
-      {/* Kolonne-header */}
-      <div className="flex items-center justify-between px-3 py-2">
-        <h3 className="font-semibold truncate">{column.title}</h3>
+      {/* Tittel */}
+      <h3 className="font-semibold truncate select-none">{column.title}</h3>
 
-        <div className="relative">
-          <button
-            type="button"
-            aria-label="Kolonnemeny"
-            aria-haspopup="menu"
-            aria-expanded={menuOpen}
-            className="px-2 py-1 rounded hover:bg-white/10"
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            ⋯
-          </button>
-
+      {/* Menyknapp - stopp drag når den klikkes/trykkes */}
+      <div className="relative">
+        <button
+          type="button"
+          aria-label="Kolonnemeny"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          className="px-2 py-1 rounded hover:bg-white/10 cursor-default"
+          onClick={() => setMenuOpen(v => !v)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          ⋯
+        </button>
           {menuOpen && (
             <>
               {/* klikk utenfor for å lukke */}
@@ -117,7 +129,7 @@ export default function Column({
         </div>
       </div>
 
-      {/* Kort-liste (sortable) */}
+      {/* liste (sortable) */}
       <div className="px-3 pb-3">
         <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
           {sortedCards.length === 0 ? (
@@ -163,3 +175,4 @@ export default function Column({
     </section>
   );
 }
+

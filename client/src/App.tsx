@@ -102,7 +102,19 @@ export default function App() {
       return next;
     });
   };
+const onReorderColumns = (columnId: number, toIndex: number) => {
+  setColumns(prev => {
+    const cols = [...prev].sort((a,b)=>a.order-b.order);
+    const curIndex = cols.findIndex(c => c.id === columnId);
+    if (curIndex < 0 || curIndex === toIndex) return prev;
 
+    const [moved] = cols.splice(curIndex, 1);
+    cols.splice(toIndex, 0, moved);
+    // reindex order
+    cols.forEach((c, i) => { c.order = i; });
+    return [...cols];
+  });
+};
   return (
     <div className="relative min-h-screen text-white">
       {/* Fullscreen bakgrunn */}
@@ -135,6 +147,7 @@ export default function App() {
   onEditCard={onEditCard}
   onDeleteCard={onDeleteCard}
   onReorderCards={onReorderCards}
+   onReorderColumns={onReorderColumns}
 />
       </main>
 
