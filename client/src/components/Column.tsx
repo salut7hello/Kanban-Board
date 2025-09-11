@@ -164,7 +164,7 @@ export default function Column({
         ) : (
           <AddCardRow
             onSubmit={(title) => {
-              onAddCard(column.id, title);
+              onAddCard(column.id, title );
               setAdding(false);
             }}
             onCancel={() => setAdding(false)}
