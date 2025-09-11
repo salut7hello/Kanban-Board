@@ -1,5 +1,6 @@
 import SortableColumn from "./SortableColumn";
 import AddColumnCard from "./AddColumnCard";
+import CardDetails from "./CardDetails";
 import type { Card as CardModel, Column as ColumnModel } from "../models/db";
 import {
   DndContext,
@@ -107,6 +108,7 @@ export default function BoardColumns({
   };
 
   return (
+  
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <section className="pt-4 pb-6 px-4 overflow-x-auto hide-scrollbar" aria-label="Kolonner">
         <div className="flex items-start gap-4 w-max">
@@ -132,5 +134,6 @@ export default function BoardColumns({
         </div>
       </section>
     </DndContext>
+    
   );
 }

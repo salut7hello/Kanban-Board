@@ -16,7 +16,7 @@ type Props = {
 export default function DraggableCard({ card, columnId, index, ...actions }: Props) {
   const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
     useSortable({
-      id: card.id!,                // unikt id
+      id: card.id!,               
       data: { type: "card", columnId, index }, 
     });
 
