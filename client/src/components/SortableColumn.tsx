@@ -19,7 +19,7 @@ export default function SortableColumn(props: Props) {
 
   const {
     setNodeRef,
-    setActivatorNodeRef,   // ref til drag-handle-header
+    setActivatorNodeRef,   
     attributes,
     listeners,
     transform,
