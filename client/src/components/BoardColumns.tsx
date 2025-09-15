@@ -1,6 +1,5 @@
 import SortableColumn from "./SortableColumn";
 import AddColumnCard from "./AddColumnCard";
-import CardDetails from "./CardDetails";
 import type { Card as CardModel, Column as ColumnModel } from "../models/db";
 import {
   DndContext,

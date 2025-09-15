@@ -6,7 +6,7 @@ import type { Card as CardModel } from "../models/db";
 
 type Props = {
   card: CardModel;
-  columnId: number;   // den kolonnen kortet ligger i nå
+  columnId: number;   
   index: number;      // posisjon i kolonnen
   onToggle?: () => void;
   onEdit?: () => void;
